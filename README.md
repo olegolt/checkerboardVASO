@@ -1,1 +1,3 @@
 # checkerboardVASO
+
+TODO: readme update

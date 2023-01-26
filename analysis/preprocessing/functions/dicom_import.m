@@ -17,8 +17,9 @@
 
 batch_nr = 1;
 prisma_id = 24515;
-sub_folder  = '/home/goltermann/VASO_180123';
+sub_folder  = '/home/goltermann/checkerboardVASO/data/raw';
 runs = 3;
+sub = 'sub-01';
 
 
 [~, folders_txt] = system(sprintf('dicq -f PRISMA_%d',prisma_id));
@@ -45,21 +46,29 @@ for d = 1:length(d_names_fMRI)
     full_fnames_fMRI{d} = strcat(d_names_fMRI{d},'/',fnames_fMRI{d});
 end
 
+%TODO: suddendly it adds a first cell entry with no match...
+full_fnames_fMRI = full_fnames_fMRI(2:end);
+full_fnames_anat = full_fnames_anat(2:end);
+
+
 % anatomical
 for b = 1:length(full_fnames_anat)
     matlabbatch{batch_nr}.spm.util.import.dicom.data = cellstr(full_fnames_anat{b});
     matlabbatch{batch_nr}.spm.util.import.dicom.root = 'flat';
+
+    anatfolder = fullfile(sub_folder,'anat',sub);
     
     if length(full_fnames_anat) > 1
-        if ~exist(fullfile(sub_folder,sprintf('anat_%d',b)), 'dir')
-                        mkdir(fullfile(sub_folder,sprintf('anat_%d',b)));
+        anat_sess_folder =fullfile(anatfolder,sprintf('anat_%d',b));
+        if ~exist(anat_sess_folder, 'dir')
+            mkdir(anat_sess_folder);
         end
-        matlabbatch{batch_nr}.spm.util.import.dicom.outdir = {fullfile(sub_folder,sprintf('anat_%d',b))};
+        matlabbatch{batch_nr}.spm.util.import.dicom.outdir = {fullfile(anatfolder,sprintf('anat_%d',b))};
     else
-        if ~exist(fullfile(sub_folder,'anat'), 'dir')
-                        mkdir(fullfile(sub_folder,'anat'));
+        if ~exist(anatfolder, 'dir')
+                        mkdir(anatfolder);
         end
-        matlabbatch{batch_nr}.spm.util.import.dicom.outdir = {fullfile(sub_folder,'anat')};
+        matlabbatch{batch_nr}.spm.util.import.dicom.outdir = {anatfolder};
     end
     matlabbatch{batch_nr}.spm.util.import.dicom.protfilter = '.*';
     matlabbatch{batch_nr}.spm.util.import.dicom.convopts.format = 'nii';
@@ -87,7 +96,7 @@ c = mat2cell(v,diff([0:img:n-1,n]));
 for r = 1:runs
 
     % create run folder
-    runfolder = fullfile(sub_folder,'func',sprintf('run_%d',r));
+    runfolder = fullfile(sub_folder,'func',sub,sprintf('ses-0%d',r));
 
     if ~exist(runfolder,'dir')
         mkdir(runfolder);
@@ -124,3 +133,4 @@ end
 
 
 spm_jobman('run',matlabbatch)
+

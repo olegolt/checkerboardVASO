@@ -1,0 +1,50 @@
+function nii_conv_3D_to_4D(all_sub_id)
+% ________________________________________________________________________________________
+% Create 4D nifti
+% 
+% author: ole.goltermann@maxplanckschools.de
+% 
+% ----------------------------------------------------------------------------------------
+%
+% Script creates 4D niftis for every run and excludes dummies
+%
+% output: 
+%
+% ----------------------------------------------------------------------------------------
+%
+% TODO: 
+% Quick and dirty script --> clean up and write it as function 
+% ________________________________________________________________________________________
+
+% ---------- set paths -------------------------------------------------------------------
+
+% data
+raw_func_dir = '/home/goltermann/checkerboardVASO/data/raw/func';
+
+%---------- prepare folders for later loops ----------------------------------------------
+
+% get amount of subjects and save names into a cell array
+dir_sub = dir([raw_func_dir '/sub-*']);
+subs = numel(dir_sub([dir_sub(:).isdir]));
+subDirsNames = {dir_sub(1:end).name};
+subjects = zeros(1,subs);
+for s = 1:subs
+    subjects(s) = str2double(regexp(string(subDirsNames(s)),'\d*','Match'));
+end
+
+% get amount of sessions for each subject
+blocks = zeros(1,subs);
+for s = 1:subs
+    dir_ses = dir([dir_sub char(subDirsNames(s)) 'ses*']);
+    ses(s) = numel(dir_ses([dir_ses(:).isdir]));
+end
+
+
+
+
+
+
+
+
+
+

@@ -12,8 +12,25 @@ Where: UKE Hamburg, Germany
 
 Test VASO sequence with a visual checkerboard task on a 3T scanner
 
-## Structure:
+## Folder structure:
 
-TODO 
+* analysis
+  * preprocessing
+    * functions
+* data
+  * derivatives
+  * raw
+    * anat
+      * sub-01
+      * sub-XY
+    * beh
+      * sub-01
+      * sub-XY
+    * func
+      * sub-01
+      * sub-XY
+* experiment 
+  * dsub25
+  * subfunctions
 
 

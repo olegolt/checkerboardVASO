@@ -96,7 +96,7 @@ c = mat2cell(v,diff([0:img:n-1,n]));
 for r = 1:runs
 
     % create run folder
-    runfolder = fullfile(sub_folder,'func',sub,sprintf('ses-0%d',r));
+    runfolder = fullfile(sub_folder,'func',sub,sprintf('run-0%d',r));
 
     if ~exist(runfolder,'dir')
         mkdir(runfolder);
@@ -105,10 +105,10 @@ for r = 1:runs
     % select corresponding values for run
     c_run = c{r}';
 
-    names = {sprintf('VASO_magn_run_%d',r), ...
-             sprintf('VASO_phas_run_%d',r), ...
-             sprintf('BOLD_magn_run_%d',r), ...
-             sprintf('BOLD_phas_run_%d',r)}; 
+    names = {sprintf('run_%d_nulled_magn',r), ...
+             sprintf('run_%d_nulled_phas',r), ...
+             sprintf('run_%d_notnulled_magn',r), ...
+             sprintf('run_%d_notnulled_phas',r)}; 
 
     for b = 1:length(c_run)
 
@@ -130,7 +130,6 @@ for r = 1:runs
     end
 
 end
-
 
 spm_jobman('run',matlabbatch)
 

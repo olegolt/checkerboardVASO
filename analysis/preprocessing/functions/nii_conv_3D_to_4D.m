@@ -14,6 +14,7 @@ function nii_conv_3D_to_4D(all_sub_id)
 %
 % TODO: 
 % Quick and dirty script --> clean up and write it as function 
+%   TODO 1: automatize dummy calculation and include error message
 % ________________________________________________________________________________________
 
 % ---------- set paths -------------------------------------------------------------------
@@ -41,34 +42,36 @@ end
 
 %---------- if not done already exclude dummies ------------------------------------------
 
+dummy = 3; % 3 for VASO, 3 for BOLD
+
 for s = 1:subs
-    for b = 1:blocks(s)
-        rundir = fullfile(basedir, char(subDirsNames(s)),sprintf('/Raw/Run%d',b));
-        dum_dir = fullfile(rundir, 'dummy');
-        files = spm_select('FPList',rundir,'.nii');
-        scans_end = size(files,1) - scans_pain(b,s) - dum_scans(b,s);
-        % check if dummy dir already exists, if not create and move scans
-        if not(isfolder(dum_dir))
-            if scans_pain(b,s)+dum_scans(b,s) < size(files,1)
-                if size(files,1) ~= scans_pain(b,s) + dum_scans(b,s) + scans_end
-                    error('Error: Probably already moved dummies for %s, Run0%d\n', char(subDirsNames(s)), b)
+    for b = 1:ses(s)
+        dir_ses = fullfile(raw_func_dir, sprintf('/sub-0%d/ses-0%d',s,b));
+        % get names of the folders inside session directory (VASO/BOLD, magn/phas)
+        files = dir(dir_ses);
+        dir_log= [files.isdir];
+        sub_folders = files(dir_log);
+        subFolderNames = {sub_folders(3:end).name};
+        % acess the VASO/BOLD, magn/phas folders
+        for f = 1:length(subFolderNames)
+            dir_seq = fullfile(dir_ses, char(subFolderNames(f)));
+            dir_dum = fullfile(dir_seq, 'dummy');
+            % select all files in dir_seq folder
+            files = spm_select('FPList',dir_seq,'.nii');
+            % TODO 1: automatize dummy calculation and include error
+            % message
+            if not(isfolder(dir_dum))
+                dummies = files(1:dummy,:);
+                mkdir(dir_dum)
+                for i=1:size(dummies,1)
+                    movefile(dummies(i,:),dir_dum);
                 end
-                dummies_start = files(1:dum_scans(b,s),:);
-                dummies_end = files(end-scans_end+1:end,:);% these are scans during the rating in the end
-                mkdir(dum_dir)
-                move = [dummies_start; dummies_end];
-                for f=1:size(move,1)
-                    movefile(move(f,:),dum_dir);
-                end
-            else 
-                fprintf('There seems to be a problem with %s, Run0%d - not enough scans in folder\n', char(subDirsNames(s)), b);
+            else
+                fprintf('Already a dummy folder')
             end
-        else 
-            fprintf('Already a dummy folder for %s, Run0%d\n', char(subDirsNames(s)), b);
         end
     end
 end
-
 
 
 

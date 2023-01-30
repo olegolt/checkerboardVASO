@@ -46,7 +46,7 @@ for d = 1:length(d_names_fMRI)
     full_fnames_fMRI{d} = strcat(d_names_fMRI{d},'/',fnames_fMRI{d});
 end
 
-%TODO: suddendly it adds a first cell entry with no match...
+%TODO: it adds a first cell entry with no match...
 full_fnames_fMRI = full_fnames_fMRI(2:end);
 full_fnames_anat = full_fnames_anat(2:end);
 

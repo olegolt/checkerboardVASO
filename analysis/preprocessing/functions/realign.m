@@ -52,10 +52,10 @@ matlabbatch = cell(1,subs);
 
 for s=1:subs
     dir_sub = fullfile(dir_der,sprintf('sub-%02.2d/func',subjects(s)));
-    for b=2:run(s)
+    for b=1:run(s)
         mask = fullfile(dir_sub,'mask.nii');
         run_pattern = sprintf('run_%d_nulled_magn.nii',b);
-        files{b-1} = cellstr(spm_select('ExtFPList', dir_sub, run_pattern));
+        files{b} = cellstr(spm_select('ExtFPList', dir_sub, run_pattern));
         % create batch for estimate & write 
         matlabbatch{s}.spm.spatial.realign.estwrite.data             = files;
         matlabbatch{s}.spm.spatial.realign.estwrite.eoptions.quality = 1;
@@ -82,10 +82,10 @@ matlabbatch = cell(1,subs);
 
 for s=1:subs
     dir_sub = fullfile(dir_der,sprintf('sub-%02.2d/func',subjects(s)));
-    for b=2:run(s)
+    for b=1:run(s)
         mask = fullfile(dir_sub,'mask.nii');
         run_pattern = sprintf('run_%d_notnulled_magn.nii',b);
-        files{b-1} = cellstr(spm_select('ExtFPList', dir_sub, run_pattern));
+        files{b} = cellstr(spm_select('ExtFPList', dir_sub, run_pattern));
         % create batch for estimate & write 
         matlabbatch{s}.spm.spatial.realign.estwrite.data             = files;
         matlabbatch{s}.spm.spatial.realign.estwrite.eoptions.quality = 1;
